@@ -5,7 +5,7 @@ from bson.objectid import ObjectId
 from pymongo.collection import ReturnDocument
 from flask_restplus import Namespace, Resource, fields
 
-myclient = pymongo.MongoClient(os.getenv("BD_CONN"))
+myclient = pymongo.MongoClient(os.getenv("DB_CONN"))
 db = myclient[os.getenv("DB_NAME")]
 propCol = db["properties"]
 api = Namespace('arp_table', description='arp table related operations')
