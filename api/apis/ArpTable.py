@@ -7,30 +7,30 @@ from flask_restplus import Namespace, Resource, fields
 
 myclient = pymongo.MongoClient(os.getenv("DB_CONN"))
 db = myclient[os.getenv("DB_NAME")]
-propCol = db["properties"]
+arp_table_col = db["arp_tables"]
 api = Namespace('arp_table', description='arp table related operations')
 
 arp_table = api.model('ARP_TABLE', {
-    "interface": fields.String(readonly=True, description='Interface of the device'),
-    "mac": fields.String(),
-    "ip": fields.String(),
-    "age": fields.Float(),
+    "interface": fields.String(description='Interface of the device'),
+    "mac": fields.String(description='MAC of the device'),
+    "ip": fields.String(description='IP of the device'),
+    "age": fields.Float(description='Age of the device'),
 })
 
 
 @api.route('/')
 @api.response(404, 'arp_table not inserted')
 @api.response(500, 'Server Error')
-class Properties(Resource):
-    @api.doc('list_properties')
+class ArpTables(Resource):
+    @api.doc('list_arp_tables')
     def get(self):
-        return list(propCol.find())
+        return list(arp_table_col.find())
 
     @api.doc('post_arp_table')
     @api.expect(arp_table)
     def post(self):
         try:
-            result_id = propCol.insert_one(api.payload).inserted_id
+            result_id = arp_table_col.insert_one(api.payload).inserted_id
             if result_id:
                 return {'msg': 'Inserted'}, 201
             raise ValueError('arp_table not found')
@@ -46,11 +46,11 @@ class Properties(Resource):
 @api.param('id', 'The arp_table identifier')
 @api.response(404, 'arp_table not found')
 @api.response(500, 'Server Error')
-class arp_table(Resource):
+class ArpTable(Resource):
     @api.doc('get_arp_table')
     def get(self, id):
         try:
-            result = propCol.find_one({'_id': ObjectId(id)})
+            result = arp_table_col.find_one({'_id': ObjectId(id)})
             if result:
                 return result
             raise ValueError('arp_table not found')
@@ -66,7 +66,7 @@ class arp_table(Resource):
     def put(self, id):
         try:
             doc = api.payload
-            result = propCol.find_one_and_update(
+            result = arp_table_col.find_one_and_update(
                 {'_id': ObjectId(id)},
                 {'$set': doc},
                 return_document=ReturnDocument.AFTER)
@@ -83,7 +83,7 @@ class arp_table(Resource):
     @api.doc('delete_arp_table')
     def delete(self, id):
         try:
-            result = propCol.find_one_and_delete({'_id': ObjectId(id)})
+            result = arp_table_col.find_one_and_delete({'_id': ObjectId(id)})
             if result:
                 return {'msg': 'Deleted'}, 200
             raise ValueError('arp_table not found')
