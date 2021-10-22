@@ -1,7 +1,4 @@
-import os
 import psycopg2
-from flask import jsonify
-from bson.objectid import ObjectId
 from flask_restplus import Namespace, Resource, fields
 
 try:
@@ -13,12 +10,11 @@ except Exception as e:
 api = Namespace('arp_table_sql', description='arp table related operations using SQL')
 
 arp_table = api.model('ARP_TABLE', {
-    "interface": fields.String(readonly=True, description='Interface of the device'),
+    "interface": fields.String(description='Interface of the device'),
     "mac": fields.String(),
     "ip": fields.String(),
     "age": fields.Float(),
 })
-
 
 @api.route('/')
 @api.response(404, 'arp_table not inserted')
@@ -26,7 +22,7 @@ arp_table = api.model('ARP_TABLE', {
 class Properties(Resource):
     @api.doc('list_properties')
     def get(self):
-      cursor1=conexion1.cursor()
+      cursor1= conexion1.cursor()
       cursor1.execute("SELECT * FROM arp")
       rows = []
       for fila in cursor1:
@@ -39,12 +35,12 @@ class Properties(Resource):
     def post(self):
         try:
           data = api.payload
-          print(data)
+          print(data["interface"])
           cursor1=conexion1.cursor()
           sql = "INSERT INTO arp(interface, mac, ip, age) VALUES(%s, %s, %s, %s)"
-          datos=("naranjas", 23.50)
+          datos=(data["interface"], data["mac"], data["ip"], data["age"])
           cursor1.execute(sql, datos)
-          #conexion1.commit()
+          conexion1.commit()
         except ValueError as ve:
             print('arp_table exception', ve)
             api.abort(404)
@@ -62,14 +58,14 @@ class arp_table(Resource):
     def get(self, id):
         try:
             cursor1=conexion1.cursor()
-            cursor1.execute("SELECT * FROM arp WHERE id = " + id)
+            cursor1.execute("SELECT * FROM arp WHERE mac = '" + id + "'")
             rows = []
             for fila in cursor1:
               print(fila)
               rows.append(fila)
             if rows:
               return rows 
-            raise ValueError('arp_table not found')
+            
         except ValueError as ve:
             print('arp_table exception', ve)
             api.abort(404)
@@ -82,14 +78,13 @@ class arp_table(Resource):
     def put(self, id):
         try:
             data = api.payload
-            print(data)
             cursor1=conexion1.cursor()
             sql = "UPDATE arp SET interface = %s, ip = %s, age=%s WHERE mac = %s"
-            datos=("naranjas", 23.50)
+            datos=(data["interface"], data["ip"], data["age"], id)
             cursor1.execute(sql, datos)
-            #conexion1.commit()
+            conexion1.commit()
             return True
-            raise ValueError('arp_table not found')
+            
         except ValueError as ve:
             print('arp_table exception', ve)
             api.abort(404)
@@ -100,15 +95,12 @@ class arp_table(Resource):
     @api.doc('delete_arp_table')
     def delete(self, id):
         try:
-            data = api.payload
-            print(data)
             cursor1=conexion1.cursor()
-            sql = "DELETE FROM arp WHERE mac = %s"
-            datos=("naranjas")
-            cursor1.execute(sql, datos)
-            #conexion1.commit()
+            sql = "DELETE FROM arp WHERE mac = '" + id + "'"
+            cursor1.execute(sql)
+            conexion1.commit()
             return True
-            raise ValueError('arp_table not found')
+            
         except ValueError as ve:
             print('arp_table exception', ve)
             api.abort(404)
