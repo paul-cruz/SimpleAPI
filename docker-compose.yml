@@ -12,6 +12,7 @@ services:
       - 5000:5000
     depends_on:
       - db-service
+      - postgres
     networks:
       - simple-network
     environment:
@@ -37,8 +38,11 @@ services:
     environment:
       - POSTGRES_PASSWORD=MyPassw0rd
       - POSTGRES_USER=sample
+      - POSTGRES_PORT=5432
     ports:
-      - "5432:5432"
+      - "5430:5432"
+    networks:
+      - simple-network
 
 networks:
   simple-network:
@@ -46,6 +50,4 @@ networks:
 
 volumes:
   data-volume:
-  node_modules:
-  web-root:
-    driver: local
+  postgres_data:

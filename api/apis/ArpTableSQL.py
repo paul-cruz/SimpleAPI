@@ -3,8 +3,21 @@ import psycopg2
 from flask import jsonify
 from bson.objectid import ObjectId
 from flask_restplus import Namespace, Resource, fields
+from sqlalchemy import create_engine
+from sqlalchemy import Table, Column, String, MetaData
 
-conexion1 = psycopg2.connect(database="networks_project", user="postgres", password="123456")
+db_string = "postgresql://sample:MyPassw0rd@localhost:5432/networks_project"
+
+db = create_engine(db_string)
+
+with db.connect() as conn:
+  print("hola", conn)
+
+try:
+    #conexion1 = psycopg2.connect(host="0.0.0.0", port="5430", dbname="networks_project", connect_timeout="10", user="sample", password="MyPassw0rd")
+    print("Accepted")
+except Exception as e:
+    print(e)
 
 api = Namespace('arp_table_sql', description='arp table related operations using SQL')
 
