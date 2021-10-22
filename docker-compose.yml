@@ -27,6 +27,15 @@ services:
       - "27017:27017"
     networks:
       - simple-network
+  postgres:
+    image: "postgres:latest"
+    restart: always
+    volumes:
+      - "./postgres_data:/var/lib/postgresql/data"
+    environment:
+      - POSTGRES_PASSWORD=MyPassw0rd
+    ports:
+      - "5432:5432"
 
 networks:
   simple-network:
