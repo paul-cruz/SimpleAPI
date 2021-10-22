@@ -12,7 +12,6 @@ services:
       - 5000:5000
     depends_on:
       - db-service
-      - postgres
     networks:
       - simple-network
     environment:
@@ -30,24 +29,9 @@ services:
     networks:
       - simple-network
 
-  postgres:
-    image: "postgres:latest"
-    restart: always
-    volumes:
-      - "./postgres_data:/var/lib/postgresql/data"
-    environment:
-      - POSTGRES_PASSWORD=MyPassw0rd
-      - POSTGRES_USER=sample
-      - POSTGRES_PORT=5432
-    ports:
-      - "5430:5432"
-    networks:
-      - simple-network
-
 networks:
   simple-network:
     driver: bridge
 
 volumes:
   data-volume:
-  postgres_data:

@@ -3,19 +3,10 @@ import psycopg2
 from flask import jsonify
 from bson.objectid import ObjectId
 from flask_restplus import Namespace, Resource, fields
-from sqlalchemy import create_engine
-from sqlalchemy import Table, Column, String, MetaData
-
-db_string = "postgresql://sample:MyPassw0rd@localhost:5432/networks_project"
-
-db = create_engine(db_string)
-
-with db.connect() as conn:
-  print("hola", conn)
 
 try:
-    #conexion1 = psycopg2.connect(host="0.0.0.0", port="5430", dbname="networks_project", connect_timeout="10", user="sample", password="MyPassw0rd")
-    print("Accepted")
+    conexion1 = psycopg2.connect("postgresql://maqkdosvkohfxz:2c8f3f1893ffbdcf513a5fb614c7119ff409377f4858e82c3449b4b73e179285@ec2-52-3-239-135.compute-1.amazonaws.com:5432/db0d4m6v47f411")
+    print(conexion1)
 except Exception as e:
     print(e)
 
