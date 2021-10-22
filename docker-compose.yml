@@ -34,6 +34,7 @@ services:
       - "./postgres_data:/var/lib/postgresql/data"
     environment:
       - POSTGRES_PASSWORD=MyPassw0rd
+      - POSTGRES_USER=sample
     ports:
       - "5432:5432"
 
