@@ -19,6 +19,7 @@ services:
       FLASK_DEBUG: 1
       BD_CONN: mongodb://db-service:27017/
       DB_NAME: db-simple
+
   db-service:
     image: mongo
     volumes:
@@ -27,6 +28,7 @@ services:
       - "27017:27017"
     networks:
       - simple-network
+
   postgres:
     image: "postgres:latest"
     restart: always

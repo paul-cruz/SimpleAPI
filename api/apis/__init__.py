@@ -1,5 +1,6 @@
 from flask_restplus import Api
 from .ArpTable import api as nsArpTable
+from .ArpTableSQL import api as nsArpTableSQL
 
 api = Api(
     title='Simple API',
@@ -9,3 +10,4 @@ api = Api(
 )
 
 api.add_namespace(nsArpTable, path='/arp_table')
+api.add_namespace(nsArpTableSQL, path='/arp_table_sql')
